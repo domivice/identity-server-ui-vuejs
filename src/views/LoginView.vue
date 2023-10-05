@@ -38,11 +38,15 @@ Main Content START -->
                                             />
                                         </a> -->
                                         <!-- Title -->
-                                        <h1 class="mb-2 h3">Welcome back</h1>
+                                        <h1 class="mb-2 h3">
+                                            {{ $t('login.welcome') }}
+                                        </h1>
                                         <p class="mb-0">
-                                            New here?
+                                            {{ $t('login.newHere') }}
                                             <router-link to="/register">
-                                                Create an account
+                                                {{
+                                                    $t('login.createAnAccount')
+                                                }}
                                             </router-link>
                                         </p>
 
@@ -51,17 +55,71 @@ Main Content START -->
                                             @submit="submit"
                                             class="mt-4 text-start"
                                         >
+                                            <AlertBox
+                                                :icon="alert.icon"
+                                                :type="alert.type"
+                                                v-if="alert.content"
+                                            >
+                                                <div>{{ alert.content }}</div>
+                                            </AlertBox>
                                             <!-- Email -->
                                             <BaseInput
                                                 type="email"
-                                                label="Enter email id"
+                                                :label="
+                                                    $t(
+                                                        'login.enterEmailAddress'
+                                                    )
+                                                "
                                                 v-model="signIn.email"
-                                            />
+                                                :class="{
+                                                    'is-invalid':
+                                                        v$.signIn.email.$invalid
+                                                }"
+                                                @blur="v$.signIn.email.$touch"
+                                            >
+                                                <div
+                                                    v-if="
+                                                        v$.signIn.email.$invalid
+                                                    "
+                                                    class="invalid-feedback"
+                                                >
+                                                    {{
+                                                        $t(
+                                                            'login.invalidEmailFeedback'
+                                                        )
+                                                    }}
+                                                </div>
+                                            </BaseInput>
+
                                             <!-- Password -->
                                             <PasswordInput
-                                                label="Enter password"
+                                                :label="
+                                                    $t('login.enterPassword')
+                                                "
                                                 v-model="signIn.password"
-                                            />
+                                                :class="{
+                                                    'is-invalid':
+                                                        v$.signIn.password
+                                                            .$invalid
+                                                }"
+                                                @blur="
+                                                    v$.signIn.password.$touch
+                                                "
+                                            >
+                                                <div
+                                                    v-if="
+                                                        v$.signIn.password
+                                                            .$invalid
+                                                    "
+                                                    class="invalid-feedback"
+                                                >
+                                                    {{
+                                                        $t(
+                                                            'login.invalidPasswordFeedback'
+                                                        )
+                                                    }}
+                                                </div>
+                                            </PasswordInput>
                                             <!-- Remember me -->
                                             <div
                                                 class="mb-3 d-sm-flex justify-content-between"
@@ -75,13 +133,21 @@ Main Content START -->
                                                     <label
                                                         class="form-check-label"
                                                         for="rememberCheck"
-                                                        >Remember me?</label
+                                                        >{{
+                                                            $t(
+                                                                'login.rememberMe'
+                                                            )
+                                                        }}</label
                                                     >
                                                 </div>
                                                 <router-link
                                                     to="/forgot-password"
                                                 >
-                                                    Forgot password?
+                                                    {{
+                                                        $t(
+                                                            'login.forgotPassword'
+                                                        )
+                                                    }}
                                                 </router-link>
                                             </div>
                                             <!-- Button -->
@@ -89,8 +155,11 @@ Main Content START -->
                                                 <button
                                                     type="submit"
                                                     class="btn btn-primary w-100 mb-0"
+                                                    :disabled="
+                                                        v$.signIn.$invalid
+                                                    "
                                                 >
-                                                    Login
+                                                    {{ $t('login.login') }}
                                                 </button>
                                             </div>
 
@@ -120,6 +189,9 @@ import BaseInput from '@/components/inputs/BaseInput.vue'
 import PasswordInput from '@/components/inputs/PasswordInput.vue'
 import SignInWith from '@/components/layout/SignInWith.vue'
 import FormFooterCopyRights from '@/components/layout/FormFooterCopyRights.vue'
+import AlertBox from '@/components/layout/AlertBox.vue'
+import useVuelidate from '@vuelidate/core'
+import { required, email, minLength } from '@vuelidate/validators'
 
 export default {
     name: 'HomeView',
@@ -128,27 +200,60 @@ export default {
         BaseInput,
         PasswordInput,
         SignInWith,
-        FormFooterCopyRights
+        FormFooterCopyRights,
+        AlertBox
+    },
+    setup() {
+        return { v$: useVuelidate() }
     },
     data() {
         const route = useRoute()
         return {
             signIn: {
-                email: 'nelsonkana@gmail.com',
-                password: 'Test1234567890!',
+                email: '',
+                password: '',
                 returnUrl: route.query['ReturnUrl']
+            },
+            alert: {
+                type: 'danger',
+                icon: 'warning',
+                content: null
             }
         }
     },
     methods: {
         submit: async function (event) {
             event.preventDefault()
+            this.alert.content = null
+            const isFormCorrect = await this.v$.$validate()
+            if (!isFormCorrect) return
             await axios
                 .post('auth/login', this.signIn)
                 .then(({ data }) => {
                     window.location.href = data
                 })
-                .catch(error => console.log(error))
+                .catch(error => {
+                    console.log(error.response.data)
+                    this.alert.content = this.$i18n.t(error.response.data.type)
+                })
+        }
+    },
+    validations() {
+        return {
+            signIn: {
+                email: {
+                    required,
+                    email,
+                    $lazy: true
+                },
+                password: {
+                    required,
+                    $lazy: true
+                },
+                returnUrl: {
+                    required
+                }
+            }
         }
     }
 }

@@ -1,15 +1,12 @@
 <template>
-    <div class="position-relative">
-        <BaseInput :label="label" v-model="password" type="password">
-            <span
-                class="position-absolute top-50 end-0 translate-middle-y p-0 mt-3"
-            >
-                <i
-                    class="fakepasswordicon fas fa-eye-slash cursor-pointer p-2"
-                ></i>
-            </span>
-        </BaseInput>
-    </div>
+    <BaseInput
+        v-bind="$attrs"
+        :label="label"
+        v-model="password"
+        type="password"
+    >
+        <slot></slot>
+    </BaseInput>
 </template>
 
 <script>

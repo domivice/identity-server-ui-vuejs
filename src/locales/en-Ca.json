@@ -1,0 +1,58 @@
+{
+    "pages":{
+        "login":"Login",
+        "registration":"Registration"
+    },
+    "login":{
+        "welcome":"Welcome back",
+        "newHere":"New here?",
+        "createAnAccount":"Create an account",
+        "enterEmailAddress":"Enter email address",
+        "invalidEmailFeedback":"Please provide a valid email address.",
+        "invalidPasswordFeedback":"Please provide a password.",
+        "enterPassword":"Enter password",
+        "rememberMe":"Remember me?",
+        "forgotPassword":"Forgot password?",
+        "login":"Login",
+        "orSignInWith":"Or sign in with",
+        "signInWithGoogle":" Sign in with Google",
+        "signInWithFaceBook":" Sign in with Google",
+        "copyRights": "Copyrights ©2023 Domivice."
+    },
+    "authentication":{
+        "loginFailed": "There was a problem with your email or password."
+    },
+    "forms":{
+        "emailLabel":"Enter email address",
+        "emailErrorMessage":"Please provide a valid email address.",
+        "passwordLabel":"Enter password",
+        "passwordErrorMessage":"Please provide a password between {0} and {1} characters.",
+        "buttonNext":"Next",
+        "buttonLogin":"Login",
+        "buttonRegister":"Register",
+        "verificationCodeLabel":"Enter the code we sent you",
+        "verificationCodeErrorMessage":"Please provide a verification code.",
+        "firstNameLabel":"Enter first name",
+        "firstNameErrorMessage":"Please provide a valid first name.",
+        "lastNameLabel":"Enter last name",
+        "lastNameErrorMessage":"Please provide a valid last name.",
+        "phoneNumberLabel":"Enter phone number",
+        "phoneNumberErrorMessage":"Please provide a valid phone number."
+    },
+    "headings":{
+        "gettingStarted":"Getting Started",
+        "weSentYouACode":"We sent you a code",
+        "createNewAccount":"Create new account"
+    },
+    "body":{
+        "alreadyAMember":"Already a member?",
+        "login":"Log in"
+    },
+    "https://domivice.com/probs/bad-request":"There was a problem with the information you provided.",
+    "https://domivice.com/probs/not-found":"We were unable to find the resource you requested.",
+    "https://domivice.com/probs/unauthorizied":"You are not allowed to access the requested resource.",
+    "https://domivice.com/probs/forbidden":"You are not allowed to carry this action.",
+    "https://domivice.com/probs/internal-error":"There was a problem on our side. Please try again later.",
+    "https://domivice.com/probs/validation-error":"One or more validation errors occured with the provided input.",
+    "https://domivice.com/probs/user-verification-failed":"We were not able to verify the provided contact information. Please try again."
+}

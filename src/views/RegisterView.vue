@@ -26,75 +26,57 @@ Main Content START -->
                                     ></div>
                                 </div>
 
-                                <!-- Information -->
+                                <!-- Registration steps -->
                                 <div class="col-lg-6 order-1">
-                                    <div class="p-4 p-sm-7">
-                                        <!-- Logo -->
-                                        <!-- <a href="index.html">
-                                            <img
-                                                class="h-50px mb-4"
-                                                src="assets/images/logo-icon.svg"
-                                                alt="logo"
-                                            />
-                                        </a> -->
-                                        <!-- Title -->
-                                        <h1 class="mb-2 h3">
-                                            Create new account
-                                        </h1>
-                                        <p class="mb-0">
-                                            Already a member?
-                                            <router-link to="/login">
-                                                Log in
-                                            </router-link>
-                                        </p>
-
-                                        <!-- Form START -->
-                                        <form class="mt-4 text-start">
-                                            <!-- First Name -->
-                                            <BaseInput
-                                                label="Enter first name"
-                                                v-model="registration.firstName"
-                                            />
-                                            <!-- Last Name -->
-                                            <BaseInput
-                                                label="Enter last name"
-                                                v-model="registration.lastName"
-                                            />
-                                            <!-- Email -->
-                                            <BaseInput
-                                                type="email"
-                                                label="Enter email"
-                                                v-model="registration.email"
-                                            />
-                                            <!-- PhoneNumber -->
-                                            <BaseInput
-                                                label="Enter phone number"
-                                                v-model="
-                                                    registration.phoneNumber
-                                                "
-                                            />
-                                            <!-- Password -->
-                                            <PasswordInput
-                                                label="Enter password"
-                                                v-model="registration.password"
-                                            />
-                                            <!-- Button -->
-                                            <div>
-                                                <button
-                                                    type="submit"
-                                                    class="btn btn-primary w-100 mb-0"
-                                                >
-                                                    Sign up
-                                                </button>
-                                            </div>
-
-                                            <SignInWith />
-
-                                            <!-- Copyright -->
-                                            <FormFooterCopyRights />
-                                        </form>
-                                        <!-- Form END -->
-                                    </div>
+                                    <!-- Request Verification -->
+                                    <Transition mode="out-in">
+                                        <GettingStarted
+                                            v-if="
+                                                registration.step ==
+                                                'gettingStarted'
+                                            "
+                                            v-model:verification-id="
+                                                registration.verificationId
+                                            "
+                                            v-model:registration-email="
+                                                registration.email
+                                            "
+                                            v-model:registration-step="
+                                                registration.step
+                                            "
+                                        />
+                                    </Transition>
+                                    <Transition mode="out-in">
+                                        <VerificationCode
+                                            v-if="
+                                                registration.step ==
+                                                'verificationCode'
+                                            "
+                                            v-model:verification-id="
+                                                registration.verificationId
+                                            "
+                                            v-model:registration-step="
+                                                registration.step
+                                            "
+                                        />
+                                    </Transition>
+                                    <Transition mode="out-in">
+                                        <UserDetails
+                                            v-if="
+                                                registration.step ==
+                                                'userDetails'
+                                            "
+                                            v-model:verification-id="
+                                                registration.verificationId
+                                            "
+                                            v-model:registration-email="
+                                                registration.email
+                                            "
+                                            v-model:registration-step="
+                                                registration.step
+                                            "
+                                        />
+                                    </Transition>
                                 </div>
                             </div>
                         </div>
@@ -104,37 +86,19 @@ Main Content START -->
         </section>
     </NoNavLayout>
 </template>
-<script>
-// @ is an alias to /src
-import NoNavLayout from '@/layouts/NoNavLayout.vue'
-import BaseInput from '@/components/inputs/BaseInput.vue'
-import PasswordInput from '@/components/inputs/PasswordInput.vue'
-import SignInWith from '@/components/layout/SignInWith.vue'
-import FormFooterCopyRights from '@/components/layout/FormFooterCopyRights.vue'
+<script setup>
+import { ref } from 'vue'
 
-export default {
-    name: 'HomeView',
-    components: {
-        NoNavLayout,
-        BaseInput,
-        PasswordInput,
-        SignInWith,
-        FormFooterCopyRights
-    },
-    data() {
-        return {
-            registration: {
-                email: 'nelsonkana@gmail.com',
-                password: 'Test1234567890!',
-                termsAndConditions: true,
-                phoneNumber: '4389000000',
-                firstName: 'Nelson',
-                lastName: 'Kana',
-                userVerificationId: '0797742a-14b0-4225-fd07-08db0aa04659'
-            }
-        }
-    }
-}
+import NoNavLayout from '@/layouts/NoNavLayout.vue'
+import GettingStarted from '@/components/layout/GettingStarted.vue'
+import VerificationCode from '@/components/layout/VerificationCode.vue'
+import UserDetails from '@/components/layout/UserDetails.vue'
+
+const registration = ref({
+    email: null,
+    verificationId: null,
+    step: 'gettingStarted'
+})
 </script>
 <style lang="scss">
 .vh-xxl-100 {

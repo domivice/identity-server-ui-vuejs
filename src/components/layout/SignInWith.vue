@@ -5,7 +5,7 @@
         <p
             class="small bg-mode position-absolute top-50 start-50 translate-middle px-2"
         >
-            Or sign in with
+            {{ $t('login.orSignInWith') }}
         </p>
     </div>
 
@@ -16,14 +16,14 @@
                 :icon="['fab', 'google']"
                 class="text-google-icon me-2"
             />
-            Sign in with Google
+            {{ $t('login.signInWithGoogle') }}
         </a>
         <a href="#" class="btn btn-light mb-0">
             <font-awesome-icon
                 :icon="['fab', 'facebook-f']"
                 class="text-facebook me-2"
             />
-            Sign in with Facebook
+            {{ $t('login.signInWithFaceBook') }}
         </a>
     </div>
 </template>

@@ -1,0 +1,16 @@
+{
+    "login":{
+        "welcome":"Welcome back",
+        "newHere":"New here?",
+        "createAnAccount":"Create an account",
+        "enterEmailAddress":"Enter email address",
+        "enterPassword":"Enter password",
+        "rememberMe":"Remember me?",
+        "forgotPassword":"Forgot password?",
+        "login":"Login",
+        "orSignInWith":"Or sign in with",
+        "SignInWithGoogle":" Sign in with Google",
+        "SignInWithFaceBook":" Sign in with Google",
+        "CopyRights": "Copyrights ©2023 Domivice."
+    }
+}
