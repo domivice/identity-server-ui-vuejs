@@ -7,9 +7,10 @@
                 class="form-select"
                 v-model="phoneCountryCode"
             >
-                <option value="">Choose...</option>
-                <option value="CA">Canada +1</option>
-                <option value="US">US +1</option>
+                <option value="">{{ $t('forms.selectDefaultOption') }}</option>
+                <option value="CA">{{ $t('phoneCountryCode.ca') }}</option>
+                <option value="US">{{ $t('phoneCountryCode.us') }}</option>
+                <option value="FR">{{ $t('phoneCountryCode.fr') }}</option>
             </select>
             <input v-bind="$attrs" class="form-control" v-model="phoneNumber" />
             <slot></slot>

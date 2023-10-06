@@ -28,86 +28,97 @@
             <!-- First Name -->
             <BaseInput
                 :label="$t('forms.firstNameLabel')"
-                v-model="registrationRequest.firstName"
+                v-model="v$.firstName.$model"
                 :class="{
                     'is-invalid': v$.firstName.$invalid
                 }"
-                @blur="v$.firstName.$touch"
             >
-                <div v-if="v$.firstName.$invalid" class="invalid-feedback">
-                    {{ $t('forms.firstNameErrorMessage') }}
+                <div
+                    v-for="error of v$.firstName.$errors"
+                    :key="error.$uid"
+                    class="invalid-feedback"
+                >
+                    {{ error.$message }}
                 </div>
             </BaseInput>
             <!-- Last Name -->
             <BaseInput
                 :label="$t('forms.lastNameLabel')"
-                v-model="registrationRequest.lastName"
+                v-model="v$.lastName.$model"
                 :class="{
                     'is-invalid': v$.lastName.$invalid
                 }"
-                @blur="v$.lastName.$touch"
             >
-                <div v-if="v$.lastName.$invalid" class="invalid-feedback">
-                    {{ $t('forms.lastNameErrorMessage') }}
+                <div
+                    v-for="error of v$.lastName.$errors"
+                    :key="error.$uid"
+                    class="invalid-feedback"
+                >
+                    {{ error.$message }}
                 </div>
             </BaseInput>
             <!-- Email -->
             <BaseInput
                 type="email"
                 :label="$t('forms.emailLabel')"
-                v-model="registrationRequest.email"
+                v-model="v$.email.$model"
                 :class="{
                     'is-invalid': v$.email.$invalid
                 }"
-                @blur="v$.email.$touch"
                 disabled="true"
             >
-                <div v-if="v$.email.$invalid" class="invalid-feedback">
-                    {{ $t('forms.emailErrorMessage') }}
+                <div
+                    v-for="error of v$.email.$errors"
+                    :key="error.$uid"
+                    class="invalid-feedback"
+                >
+                    {{ error.$message }}
                 </div>
             </BaseInput>
             <PhoneInput
                 :label="$t('forms.phoneNumberLabel')"
-                v-model:phoneNumber="registrationRequest.phoneNumber"
-                v-model:phoneCountryCode="registrationRequest.phoneCountryCode"
+                v-model:phoneNumber="v$.phoneNumber.$model"
+                v-model:phoneCountryCode="v$.phoneCountryCode.$model"
                 :class="{
                     'is-invalid':
                         v$.phoneNumber.$invalid || v$.phoneCountryCode.$invalid
                 }"
-                @blur="v$.phoneNumber.$touch"
-                @change="v$.phoneCountryCode.$touch"
             >
                 <div
-                    v-if="
-                        v$.phoneNumber.$invalid || v$.phoneCountryCode.$invalid
-                    "
+                    v-for="error of v$.phoneNumber.$errors"
+                    :key="error.$uid"
                     class="invalid-feedback"
                 >
-                    {{ $t('forms.phoneNumberErrorMessage') }}
+                    {{ error.$message }}
+                </div>
+                <div
+                    v-for="error of v$.phoneCountryCode.$errors"
+                    :key="error.$uid"
+                    class="invalid-feedback"
+                >
+                    {{ error.$message }}
                 </div>
             </PhoneInput>
             <!-- Password -->
             <PasswordInput
                 :label="$t('forms.passwordLabel')"
-                v-model="registrationRequest.password"
+                v-model="v$.password.$model"
                 :class="{
                     'is-invalid': v$.password.$invalid
                 }"
-                @blur="v$.password.$touch"
             >
-                <div v-if="v$.password.$invalid" class="invalid-feedback">
-                    {{
-                        $t('forms.passwordErrorMessage', [
-                            passwordMinLength,
-                            passwordMaxLength
-                        ])
-                    }}
+                <div
+                    v-for="error of v$.password.$errors"
+                    :key="error.$uid"
+                    class="invalid-feedback"
+                >
+                    {{ error.$message }}
                 </div>
             </PasswordInput>
             <!-- Button -->
             <div>
                 <button
-                    :disabled="v$.$invalid"
+                    :disabled="v$.$invalid || submitting"
                     type="submit"
                     class="btn btn-primary w-100 mb-0"
                 >
@@ -170,47 +181,113 @@ const passwordMaxLength = ref(64)
 const validName = helpers.regex(
     /^(?<firstchar>(?=[A-Za-z]))((?<alphachars>[A-Za-zàèìòùÀÈÌÒÙáéíóúýÁÉÍÓÚÝâêîôûÂÊÎÔÛãñõÃÑÕäëïöüÿÄËÏÖÜŸåÅæÆœŒçÇðÐøØß])|(?<specialchars>[A-Za-z]['-](?=[A-Za-z]))|(?<spaces> (?=[A-Za-z])))*$/
 )
+const { t } = useI18n({ useScope: 'global' })
 const validationRules = {
-    email: { required, email },
+    email: {
+        required: helpers.withMessage(
+            t('validationErrors.emailRequired'),
+            required
+        ),
+        email: helpers.withMessage(t('validationErrors.emailFormat'), email),
+        $lazy: true
+    },
     password: {
-        required,
-        minLengthRef: minLength(passwordMinLength),
-        maxLengthRef: maxLength(passwordMaxLength),
+        required: helpers.withMessage(
+            t('validationErrors.passwordRequired'),
+            required
+        ),
+        minLengthRef: helpers.withMessage(
+            t('validationErrors.passwordStrength', [
+                passwordMinLength.value,
+                passwordMaxLength.value
+            ]),
+            minLength(passwordMinLength)
+        ),
+        maxLengthRef: helpers.withMessage(
+            t('validationErrors.passwordStrength', [
+                passwordMinLength.value,
+                passwordMaxLength.value
+            ]),
+            maxLength(passwordMaxLength)
+        ),
         $lazy: true
     },
     termsAndConditions: {
-        required,
+        required: helpers.withMessage(
+            t('validationErrors.termsAndConditions'),
+            required
+        ),
         sameAsRawValue: sameAs(true),
         $lazy: true
     },
-    phoneNumber: { required, numeric, $lazy: true },
-    phoneCountryCode: { required, $lazy: true },
-    firstName: { required, validName, $lazy: true },
-    lastName: { required, validName, $lazy: true },
+    phoneNumber: {
+        required: helpers.withMessage(
+            t('validationErrors.phoneNumberRequired'),
+            required
+        ),
+        numeric: helpers.withMessage(
+            t('validationErrors.phoneNumberNumeric'),
+            numeric
+        ),
+        $lazy: true
+    },
+    phoneCountryCode: {
+        required: helpers.withMessage(
+            t('validationErrors.phoneCountryCodeRequired'),
+            required
+        ),
+        $lazy: true
+    },
+    firstName: {
+        required: helpers.withMessage(
+            t('validationErrors.firstNameRequired'),
+            required
+        ),
+        validName: helpers.withMessage(
+            t('validationErrors.alphaCharectersRequired'),
+            validName
+        ),
+        $lazy: true
+    },
+    lastName: {
+        required: helpers.withMessage(
+            t('validationErrors.lastNameRequired'),
+            required
+        ),
+        validName: helpers.withMessage(
+            t('validationErrors.alphaCharectersRequired'),
+            validName
+        ),
+        $lazy: true
+    },
     userVerificationId: { required }
 }
 const $externalResults = ref({})
 const v$ = useVuelidate(validationRules, registrationRequest, {
     $externalResults
 })
-const { t } = useI18n({ useScope: 'global' })
+
 const alert = reactive({
     type: 'warning',
     icon: 'warning',
     content: null
 })
 
+const submitting = ref(false)
+
 async function createUser(event) {
     event.preventDefault()
     alert.content = null
     const isFormCorrect = await unref(v$).$validate()
-    if (!isFormCorrect) return
+    if (!isFormCorrect || submitting.value) return
+    submitting.value = true
     await axios
         .post('users', registrationRequest)
         .then(({ data }) => {
             emit('update:registrationStep', 'registrationSuccess')
         })
         .catch(({ response }) => {
+            submitting.value = false
             console.log(response)
             if (
                 response.data.type ==
@@ -218,7 +295,7 @@ async function createUser(event) {
             ) {
                 $externalResults.value = response.data.errors
             }
-            alert.content = t(response.data.type)
+            // alert.content = t(response.data.type)
         })
 }
 </script>

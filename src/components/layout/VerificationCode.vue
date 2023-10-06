@@ -12,20 +12,23 @@
             </AlertBox>
             <BaseInput
                 :label="$t('forms.verificationCodeLabel')"
-                v-model="verificationCodeRequest.code"
+                v-model.lazy="v$.code.$model"
                 :class="{
                     'is-invalid': v$.code.$invalid
                 }"
-                @blur="v$.code.$touch"
             >
-                <div v-if="v$.code.$invalid" class="invalid-feedback">
-                    {{ $t('forms.verificationCodeErrorMessage') }}
+                <div
+                    v-for="error of v$.code.$errors"
+                    :key="error.$uid"
+                    class="invalid-feedback"
+                >
+                    {{ error.$message }}
                 </div>
             </BaseInput>
             <!-- Button -->
             <div>
                 <button
-                    :disabled="v$.$invalid"
+                    :disabled="v$.$invalid || submitting"
                     type="submit"
                     class="btn btn-primary w-100 mb-0"
                 >
@@ -40,8 +43,8 @@
 import axios from '@/axios'
 import BaseInput from '@/components/inputs/BaseInput.vue'
 import AlertBox from '@/components/layout/AlertBox.vue'
-import { reactive, unref } from 'vue'
-import { required } from '@vuelidate/validators'
+import { reactive, unref, ref } from 'vue'
+import { required, helpers } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
 import { useI18n } from 'vue-i18n'
 
@@ -55,9 +58,15 @@ const props = defineProps({
 const verificationCodeRequest = reactive({
     code: null
 })
-
+const { t } = useI18n({ useScope: 'global' })
 const validationRules = {
-    code: { required, $lazy: true }
+    code: {
+        required: helpers.withMessage(
+            t('validationErrors.verificationCodeRequired'),
+            required
+        ),
+        $lazy: true
+    }
 }
 
 const alert = reactive({
@@ -67,15 +76,15 @@ const alert = reactive({
 })
 
 const v$ = useVuelidate(validationRules, verificationCodeRequest)
-const { t } = useI18n({ useScope: 'global' })
 
 let emit = defineEmits(['update:registrationStep'])
-
+const submitting = ref(false)
 async function verifyUser(event) {
     event.preventDefault()
     alert.content = null
     const isFormCorrect = await unref(v$).$validate()
-    if (!isFormCorrect) return
+    if (!isFormCorrect || submitting.value) return
+    submitting.value = true
     await axios
         .post(
             `user-verification/${props.verificationId}`,
@@ -85,6 +94,7 @@ async function verifyUser(event) {
             emit('update:registrationStep', 'userDetails')
         })
         .catch(({ response }) => {
+            submitting.value = false
             console.log(response)
             alert.content = t(response.data.type)
         })

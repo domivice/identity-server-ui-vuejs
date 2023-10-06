@@ -13,20 +13,23 @@
             <BaseInput
                 type="email"
                 :label="$t('forms.emailLabel')"
-                v-model="verificationRequest.email"
+                v-model.lazy="v$.email.$model"
                 :class="{
                     'is-invalid': v$.email.$invalid
                 }"
-                @blur="v$.email.$touch"
             >
-                <div v-if="v$.email.$invalid" class="invalid-feedback">
-                    {{ $t('forms.emailErrorMessage') }}
+                <div
+                    v-for="error of v$.email.$errors"
+                    :key="error.$uid"
+                    class="invalid-feedback"
+                >
+                    {{ error.$message }}
                 </div>
             </BaseInput>
             <!-- Button -->
             <div>
                 <button
-                    :disabled="v$.$invalid"
+                    :disabled="v$.$invalid || submitting"
                     type="submit"
                     class="btn btn-primary w-100 mb-0"
                 >
@@ -40,8 +43,8 @@
 // @ is an alias to /src
 import axios from '@/axios'
 import BaseInput from '@/components/inputs/BaseInput.vue'
-import { reactive, watch, unref } from 'vue'
-import { required, email } from '@vuelidate/validators'
+import { reactive, watch, unref, ref } from 'vue'
+import { required, email, helpers } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
 import AlertBox from '@/components/layout/AlertBox.vue'
 import { useI18n } from 'vue-i18n'
@@ -66,15 +69,25 @@ const verificationRequest = reactive({
     email: null,
     cultureCode: 'en-CA'
 })
+const { t } = useI18n({ useScope: 'global' })
 
 const validationRules = {
     verificationType: { required, $lazy: true },
-    email: { required, email, $lazy: true },
+    email: {
+        required: helpers.withMessage(
+            t('validationErrors.emailRequired'),
+            required
+        ),
+        email: helpers.withMessage(t('validationErrors.emailFormat'), email),
+        $lazy: true
+    },
     cultureCode: { required, $lazy: true }
 }
 
-const v$ = useVuelidate(validationRules, verificationRequest)
-const { t } = useI18n({ useScope: 'global' })
+const $externalResults = ref({})
+const v$ = useVuelidate(validationRules, verificationRequest, {
+    $externalResults
+})
 
 watch(verificationRequest, (request, _) => {
     emit('update:registrationEmail', request.email)
@@ -85,12 +98,13 @@ const alert = reactive({
     icon: 'warning',
     content: null
 })
-
+const submitting = ref(false)
 async function sendVerificationCode(event) {
     event.preventDefault()
     alert.content = null
     const isFormCorrect = await unref(v$).$validate()
-    if (!isFormCorrect) return
+    if (!isFormCorrect || submitting.value) return
+    submitting.value = true
     await axios
         .post('user-verification', verificationRequest)
         .then(({ data }) => {
@@ -98,8 +112,14 @@ async function sendVerificationCode(event) {
             emit('update:registrationStep', 'verificationCode')
         })
         .catch(({ response }) => {
+            submitting.value = false
             console.log(response)
-            alert.content = t(response.data.type)
+            if (
+                response.data.type ==
+                'https://domivice.com/probs/validation-error'
+            ) {
+                $externalResults.value = response.data.errors
+            }
         })
 }
 </script>

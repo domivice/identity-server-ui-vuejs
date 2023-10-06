@@ -23,21 +23,30 @@
         "loginFailed": "There was a problem with your email or password."
     },
     "forms":{
+        "selectDefaultOption":"Choose...",
         "emailLabel":"Enter email address",
-        "emailErrorMessage":"Please provide a valid email address.",
         "passwordLabel":"Enter password",
-        "passwordErrorMessage":"Please provide a password between {0} and {1} characters.",
         "buttonNext":"Next",
         "buttonLogin":"Login",
         "buttonRegister":"Register",
         "verificationCodeLabel":"Enter the code we sent you",
-        "verificationCodeErrorMessage":"Please provide a verification code.",
         "firstNameLabel":"Enter first name",
-        "firstNameErrorMessage":"Please provide a valid first name.",
         "lastNameLabel":"Enter last name",
-        "lastNameErrorMessage":"Please provide a valid last name.",
-        "phoneNumberLabel":"Enter phone number",
-        "phoneNumberErrorMessage":"Please provide a valid phone number."
+        "phoneNumberLabel":"Enter phone number"
+    },
+    "validationErrors":{
+        "emailRequired":"Please enter your email address.",
+        "emailFormat":"Be sure to type your address correctly.",
+        "verificationCodeRequired":"Please provide a verification code.",
+        "passwordRequired":"You have to provide a secure password to protect your account.",
+        "passwordStrength":"Please provide a password between {0} and {1} characters.",
+        "termsAndConditions":"You have to accept the terms and conditions.",
+        "phoneNumberRequired":"Please provide a valid phone number.",
+        "phoneNumberNumeric":"Only digits are allowed.",
+        "phoneCountryCodeRequired":"Please select your country code.",
+        "firstNameRequired":"Please enter your first name.",
+        "lastNameRequired":"Please enter your first name.",
+        "alphaCharectersRequired":"Only alphabetical characters are allowed."
     },
     "headings":{
         "gettingStarted":"Getting Started",
@@ -47,6 +56,11 @@
     "body":{
         "alreadyAMember":"Already a member?",
         "login":"Log in"
+    },
+    "phoneCountryCode": {
+        "us": "Us +1",
+        "ca": "Canada +1",
+        "fr": "France +33"
     },
     "https://domivice.com/probs/bad-request":"There was a problem with the information you provided.",
     "https://domivice.com/probs/not-found":"We were unable to find the resource you requested.",
