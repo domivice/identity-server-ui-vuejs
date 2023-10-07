@@ -122,6 +122,11 @@
                     type="submit"
                     class="btn btn-primary w-100 mb-0"
                 >
+                    <font-awesome-icon
+                        v-if="submitting"
+                        :icon="['fas', 'circle-notch']"
+                        spin
+                    />
                     {{ $t('forms.buttonRegister') }}
                 </button>
             </div>

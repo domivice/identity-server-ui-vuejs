@@ -17,7 +17,7 @@
         "orSignInWith":"Or sign in with",
         "signInWithGoogle":" Sign in with Google",
         "signInWithFaceBook":" Sign in with Google",
-        "copyRights": "Copyrights ©2023 Domivice."
+        "copyRights": "Copyrights ©2023 Domivice"
     },
     "authentication":{
         "loginFailed": "There was a problem with your email or password."
