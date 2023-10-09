@@ -80,7 +80,10 @@ const alert = reactive({
     content: null
 })
 
-const v$ = useVuelidate(validationRules, verificationCodeRequest)
+const $externalResults = ref({})
+const v$ = useVuelidate(validationRules, verificationCodeRequest, {
+    $externalResults
+})
 
 let emit = defineEmits(['update:registrationStep'])
 const submitting = ref(false)
@@ -101,7 +104,13 @@ async function verifyUser(event) {
         .catch(({ response }) => {
             submitting.value = false
             console.log(response)
-            alert.content = t(response.data.type)
+            if (
+                response.data.type ==
+                'https://domivice.com/probs/validation-error'
+            ) {
+                $externalResults.value = response.data.errors
+            }
+            // alert.content = t(response.data.type)
         })
 }
 </script>

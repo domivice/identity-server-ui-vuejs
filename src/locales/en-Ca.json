@@ -32,7 +32,8 @@
         "verificationCodeLabel":"Enter the code we sent you",
         "firstNameLabel":"Enter first name",
         "lastNameLabel":"Enter last name",
-        "phoneNumberLabel":"Enter phone number"
+        "phoneNumberLabel":"Enter phone number",
+        "termsAndConditions": "I agree to terms & conditions"
     },
     "validationErrors":{
         "emailRequired":"Please enter your email address.",
@@ -58,9 +59,9 @@
         "login":"Log in"
     },
     "phoneCountryCode": {
-        "us": "Us +1",
-        "ca": "Canada +1",
-        "fr": "France +33"
+        "us": "US +1",
+        "ca": "CA +1",
+        "fr": "FR +33"
     },
     "https://domivice.com/probs/bad-request":"There was a problem with the information you provided.",
     "https://domivice.com/probs/not-found":"We were unable to find the resource you requested.",
