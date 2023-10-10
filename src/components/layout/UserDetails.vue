@@ -115,6 +115,23 @@
                     {{ error.$message }}
                 </div>
             </PasswordInput>
+            <!-- Terms and Conditions -->
+            <CheckBox
+                :label="$t('forms.termsAndConditions')"
+                v-model="v$.termsAndConditions.$model"
+                :class="{
+                    'is-invalid': v$.termsAndConditions.$invalid
+                }"
+                id="terms-and-conditions"
+            >
+                <div
+                    v-for="error of v$.termsAndConditions.$errors"
+                    :key="error.$uid"
+                    class="invalid-feedback"
+                >
+                    {{ error.$message }}
+                </div>
+            </CheckBox>
             <!-- Button -->
             <div>
                 <button
@@ -147,6 +164,7 @@ import PasswordInput from '@/components/inputs/PasswordInput.vue'
 import SignInWith from '@/components/layout/SignInWith.vue'
 import FormFooterCopyRights from '@/components/layout/FormFooterCopyRights.vue'
 import AlertBox from '@/components/layout/AlertBox.vue'
+import CheckBox from '@/components/inputs/CheckBox.vue'
 import { unref, toRef, reactive, ref } from 'vue'
 import {
     required,
@@ -222,7 +240,10 @@ const validationRules = {
             t('validationErrors.termsAndConditions'),
             required
         ),
-        sameAsRawValue: sameAs(true),
+        sameAsRawValue: helpers.withMessage(
+            t('validationErrors.termsAndConditions'),
+            sameAs(true)
+        ),
         $lazy: true
     },
     phoneNumber: {
@@ -304,3 +325,10 @@ async function createUser(event) {
         })
 }
 </script>
+<style lang="scss">
+.form-check {
+    .invalid-feedback {
+        margin-left: -1.5rem;
+    }
+}
+</style>
