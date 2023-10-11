@@ -1,7 +1,14 @@
 <template>
     <!-- Request Verification -->
     <div class="p-4 p-sm-7">
-        <h1 class="mb-2 h3">{{ $t('headings.gettingStarted') }}</h1>
+        <h1 class="mb-2 h3">{{ $t('headings.createNewAccount') }}</h1>
+        <p>
+            {{ $t('body.alreadyAMember') }}
+            <router-link to="/login">{{ $t('body.login') }}</router-link>
+        </p>
+        <p>
+            {{ $t('body.createAccountInstructions') }}
+        </p>
         <form @submit="sendVerificationCode" class="mt-4 text-start">
             <AlertBox
                 :icon="alert.icon"
@@ -38,7 +45,7 @@
                         :icon="['fas', 'circle-notch']"
                         spin
                     />
-                    {{ $t('forms.buttonNext') }}
+                    {{ $t('forms.sendVerificationCode') }}
                 </button>
             </div>
         </form>

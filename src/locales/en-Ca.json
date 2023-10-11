@@ -15,8 +15,8 @@
         "forgotPassword":"Forgot password?",
         "login":"Login",
         "orSignInWith":"Or sign in with",
-        "signInWithGoogle":" Sign in with Google",
-        "signInWithFaceBook":" Sign in with Google",
+        "signInWithGoogle":" Continue with Google",
+        "signInWithFaceBook":" Continue with Google",
         "copyRights": "Copyrights ©2023 Domivice"
     },
     "authentication":{
@@ -29,11 +29,13 @@
         "buttonNext":"Next",
         "buttonLogin":"Login",
         "buttonRegister":"Register",
-        "verificationCodeLabel":"Enter the code we sent you",
+        "verificationCodeLabel":"Verfication code",
         "firstNameLabel":"Enter first name",
         "lastNameLabel":"Enter last name",
         "phoneNumberLabel":"Enter phone number",
-        "termsAndConditions": "I agree to terms & conditions"
+        "termsAndConditions": "I agree to terms & conditions",
+        "sendVerificationCode":"Send code",
+        "verifyCode":"Verify code"
     },
     "validationErrors":{
         "emailRequired":"Please enter your email address.",
@@ -56,7 +58,11 @@
     },
     "body":{
         "alreadyAMember":"Already a member?",
-        "login":"Log in"
+        "login":"Log in",
+        "createAccountInstructions":"To create a new account, enter your email address to receive a verification code. It may take a few minutes.",
+        "problemWithCode":"Problem with the code?",
+        "requestNewCode":"Request new code",
+        "enterVerificationCode":"Enter the verification code you received."
     },
     "phoneCountryCode": {
         "us": "US +1",

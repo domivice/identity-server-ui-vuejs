@@ -1,7 +1,18 @@
 <template>
     <!-- Request Verification -->
     <div class="p-4 p-sm-7">
-        <h1 class="mb-2 h3">{{ $t('headings.weSentYouACode') }}</h1>
+        <h1 class="mb-2 h3">{{ $t('headings.createNewAccount') }}</h1>
+        <p>
+            {{ $t('body.alreadyAMember') }}
+            <router-link to="/login">{{ $t('body.login') }}</router-link>
+        </p>
+        <p>
+            {{ $t('body.problemWithCode') }}
+            <router-link to="/register" @click="requestNewCode">{{
+                $t('body.requestNewCode')
+            }}</router-link>
+        </p>
+        <p>{{ $t('body.enterVerificationCode') }}</p>
         <form @submit="verifyUser" class="mt-4 text-start">
             <AlertBox
                 :icon="alert.icon"
@@ -37,7 +48,7 @@
                         :icon="['fas', 'circle-notch']"
                         spin
                     />
-                    {{ $t('forms.buttonNext') }}
+                    {{ $t('forms.verifyCode') }}
                 </button>
             </div>
         </form>
@@ -112,5 +123,10 @@ async function verifyUser(event) {
             }
             // alert.content = t(response.data.type)
         })
+}
+
+function requestNewCode(event) {
+    event.preventDefault()
+    emit('update:registrationStep', 'gettingStarted')
 }
 </script>

@@ -116,7 +116,7 @@
                 </div>
             </PasswordInput>
             <!-- Terms and Conditions -->
-            <CheckBox
+            <CheckboxInput
                 :label="$t('forms.termsAndConditions')"
                 v-model="v$.termsAndConditions.$model"
                 :class="{
@@ -131,7 +131,7 @@
                 >
                     {{ error.$message }}
                 </div>
-            </CheckBox>
+            </CheckboxInput>
             <!-- Button -->
             <div>
                 <button
@@ -164,7 +164,7 @@ import PasswordInput from '@/components/inputs/PasswordInput.vue'
 import SignInWith from '@/components/layout/SignInWith.vue'
 import FormFooterCopyRights from '@/components/layout/FormFooterCopyRights.vue'
 import AlertBox from '@/components/layout/AlertBox.vue'
-import CheckBox from '@/components/inputs/CheckBox.vue'
+import CheckboxInput from '@/components/inputs/CheckboxInput.vue'
 import { unref, toRef, reactive, ref } from 'vue'
 import {
     required,
@@ -177,6 +177,7 @@ import {
 } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
 import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
 
 const props = defineProps({
     registrationEmail: String,
@@ -300,6 +301,7 @@ const alert = reactive({
 })
 
 const submitting = ref(false)
+const router = useRouter()
 
 async function createUser(event) {
     event.preventDefault()
@@ -310,7 +312,7 @@ async function createUser(event) {
     await axios
         .post('users', registrationRequest)
         .then(({ data }) => {
-            emit('update:registrationStep', 'registrationSuccess')
+            router.push('/login')
         })
         .catch(({ response }) => {
             submitting.value = false

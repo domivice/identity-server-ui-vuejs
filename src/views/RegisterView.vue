@@ -29,54 +29,47 @@ Main Content START -->
                                 <!-- Registration steps -->
                                 <div class="col-lg-6 order-1">
                                     <!-- Request Verification -->
-                                    <Transition mode="out-in">
-                                        <GettingStarted
-                                            v-if="
-                                                registration.step ==
-                                                'gettingStarted'
-                                            "
-                                            v-model:verification-id="
-                                                registration.verificationId
-                                            "
-                                            v-model:registration-email="
-                                                registration.email
-                                            "
-                                            v-model:registration-step="
-                                                registration.step
-                                            "
-                                        />
-                                    </Transition>
-                                    <Transition mode="out-in">
-                                        <VerificationCode
-                                            v-if="
-                                                registration.step ==
-                                                'verificationCode'
-                                            "
-                                            v-model:verification-id="
-                                                registration.verificationId
-                                            "
-                                            v-model:registration-step="
-                                                registration.step
-                                            "
-                                        />
-                                    </Transition>
-                                    <Transition mode="out-in">
-                                        <UserDetails
-                                            v-if="
-                                                registration.step ==
-                                                'userDetails'
-                                            "
-                                            v-model:verification-id="
-                                                registration.verificationId
-                                            "
-                                            v-model:registration-email="
-                                                registration.email
-                                            "
-                                            v-model:registration-step="
-                                                registration.step
-                                            "
-                                        />
-                                    </Transition>
+                                    <GettingStarted
+                                        v-if="
+                                            registration.step ==
+                                            'gettingStarted'
+                                        "
+                                        v-model:verification-id="
+                                            registration.verificationId
+                                        "
+                                        v-model:registration-email="
+                                            registration.email
+                                        "
+                                        v-model:registration-step="
+                                            registration.step
+                                        "
+                                    />
+                                    <VerificationCode
+                                        v-if="
+                                            registration.step ==
+                                            'verificationCode'
+                                        "
+                                        v-model:verification-id="
+                                            registration.verificationId
+                                        "
+                                        v-model:registration-step="
+                                            registration.step
+                                        "
+                                    />
+                                    <UserDetails
+                                        v-if="
+                                            registration.step == 'userDetails'
+                                        "
+                                        v-model:verification-id="
+                                            registration.verificationId
+                                        "
+                                        v-model:registration-email="
+                                            registration.email
+                                        "
+                                        v-model:registration-step="
+                                            registration.step
+                                        "
+                                    />
                                 </div>
                             </div>
                         </div>
