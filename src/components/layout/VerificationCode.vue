@@ -4,13 +4,24 @@
         <h1 class="mb-2 h3">{{ $t('headings.createNewAccount') }}</h1>
         <p>
             {{ $t('body.alreadyAMember') }}
-            <router-link to="/login">{{ $t('body.login') }}</router-link>
+            <router-link
+                :to="{
+                    path: 'login',
+                    query: route.query
+                }"
+                >{{ $t('body.login') }}</router-link
+            >
         </p>
         <p>
             {{ $t('body.problemWithCode') }}
-            <router-link to="/register" @click="requestNewCode">{{
-                $t('body.requestNewCode')
-            }}</router-link>
+            <router-link
+                :to="{
+                    path: 'register',
+                    query: route.query
+                }"
+                @click="requestNewCode"
+                >{{ $t('body.requestNewCode') }}</router-link
+            >
         </p>
         <p>{{ $t('body.enterVerificationCode') }}</p>
         <form @submit="verifyUser" class="mt-4 text-start">
@@ -63,7 +74,9 @@ import { reactive, unref, ref } from 'vue'
 import { required, helpers } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
 import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
 
+const route = useRoute()
 const props = defineProps({
     verificationId: String,
     registrationStep: {

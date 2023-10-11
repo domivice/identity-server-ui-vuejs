@@ -13,7 +13,13 @@
         <h1 class="mb-2 h3">{{ $t('headings.createNewAccount') }}</h1>
         <p class="mb-0">
             {{ $t('body.alreadyAMember') }}
-            <router-link to="/login">{{ $t('body.login') }}</router-link>
+            <router-link
+                :to="{
+                    path: 'login',
+                    query: route.query
+                }"
+                >{{ $t('body.login') }}</router-link
+            >
         </p>
 
         <!-- Form START -->
@@ -177,7 +183,7 @@ import {
 } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
 import { useI18n } from 'vue-i18n'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 
 const props = defineProps({
     registrationEmail: String,
@@ -302,6 +308,7 @@ const alert = reactive({
 
 const submitting = ref(false)
 const router = useRouter()
+const route = useRoute()
 
 async function createUser(event) {
     event.preventDefault()
@@ -312,7 +319,10 @@ async function createUser(event) {
     await axios
         .post('users', registrationRequest)
         .then(({ data }) => {
-            router.push('/login')
+            router.push({
+                path: 'login',
+                query: route.query
+            })
         })
         .catch(({ response }) => {
             submitting.value = false

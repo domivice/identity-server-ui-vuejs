@@ -4,7 +4,13 @@
         <h1 class="mb-2 h3">{{ $t('headings.createNewAccount') }}</h1>
         <p>
             {{ $t('body.alreadyAMember') }}
-            <router-link to="/login">{{ $t('body.login') }}</router-link>
+            <router-link
+                :to="{
+                    path: 'login',
+                    query: route.query
+                }"
+                >{{ $t('body.login') }}</router-link
+            >
         </p>
         <p>
             {{ $t('body.createAccountInstructions') }}
@@ -60,7 +66,9 @@ import { required, email, helpers } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
 import AlertBox from '@/components/layout/AlertBox.vue'
 import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
 
+const route = useRoute()
 defineProps({
     registrationEmail: String,
     verificationId: String,

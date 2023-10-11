@@ -43,7 +43,12 @@ Main Content START -->
                                         </h1>
                                         <p class="mb-0">
                                             {{ $t('login.newHere') }}
-                                            <router-link to="/register">
+                                            <router-link
+                                                :to="{
+                                                    path: 'register',
+                                                    query: route.query
+                                                }"
+                                            >
                                                 {{
                                                     $t('login.createAnAccount')
                                                 }}
@@ -52,7 +57,7 @@ Main Content START -->
 
                                         <!-- Form START -->
                                         <form
-                                            @submit="submit"
+                                            @submit="login"
                                             class="mt-4 text-start"
                                         >
                                             <AlertBox
@@ -73,14 +78,12 @@ Main Content START -->
                                                 v-model="signIn.email"
                                                 :class="{
                                                     'is-invalid':
-                                                        v$.signIn.email.$invalid
+                                                        v$.email.$invalid
                                                 }"
-                                                @blur="v$.signIn.email.$touch"
+                                                @blur="v$.email.$touch"
                                             >
                                                 <div
-                                                    v-if="
-                                                        v$.signIn.email.$invalid
-                                                    "
+                                                    v-if="v$.email.$invalid"
                                                     class="invalid-feedback"
                                                 >
                                                     {{
@@ -99,18 +102,12 @@ Main Content START -->
                                                 v-model="signIn.password"
                                                 :class="{
                                                     'is-invalid':
-                                                        v$.signIn.password
-                                                            .$invalid
+                                                        v$.password.$invalid
                                                 }"
-                                                @blur="
-                                                    v$.signIn.password.$touch
-                                                "
+                                                @blur="v$.password.$touch"
                                             >
                                                 <div
-                                                    v-if="
-                                                        v$.signIn.password
-                                                            .$invalid
-                                                    "
+                                                    v-if="v$.password.$invalid"
                                                     class="invalid-feedback"
                                                 >
                                                     {{
@@ -124,22 +121,15 @@ Main Content START -->
                                             <div
                                                 class="mb-3 d-sm-flex justify-content-between"
                                             >
-                                                <div>
-                                                    <input
-                                                        type="checkbox"
-                                                        class="form-check-input"
-                                                        id="rememberCheck"
-                                                    />
-                                                    <label
-                                                        class="form-check-label"
-                                                        for="rememberCheck"
-                                                        >{{
-                                                            $t(
-                                                                'login.rememberMe'
-                                                            )
-                                                        }}</label
-                                                    >
-                                                </div>
+                                                <!-- Terms and Conditions -->
+                                                <CheckboxInput
+                                                    :label="
+                                                        $t('login.rememberMe')
+                                                    "
+                                                    v-model="signIn.rememberMe"
+                                                    id="rememberCheck"
+                                                >
+                                                </CheckboxInput>
                                                 <router-link
                                                     to="/forgot-password"
                                                 >
@@ -156,9 +146,18 @@ Main Content START -->
                                                     type="submit"
                                                     class="btn btn-primary w-100 mb-0"
                                                     :disabled="
-                                                        v$.signIn.$invalid
+                                                        v$.$invalid ||
+                                                        submitting
                                                     "
                                                 >
+                                                    <font-awesome-icon
+                                                        v-if="submitting"
+                                                        :icon="[
+                                                            'fas',
+                                                            'circle-notch'
+                                                        ]"
+                                                        spin
+                                                    />
                                                     {{ $t('login.login') }}
                                                 </button>
                                             </div>
@@ -179,11 +178,11 @@ Main Content START -->
         </section>
     </NoNavLayout>
 </template>
-<script>
+<script setup>
 // @ is an alias to /src
 import { useRoute } from 'vue-router'
 import axios from '@/axios'
-
+import { ref, reactive, unref } from 'vue'
 import NoNavLayout from '@/layouts/NoNavLayout.vue'
 import BaseInput from '@/components/inputs/BaseInput.vue'
 import PasswordInput from '@/components/inputs/PasswordInput.vue'
@@ -192,70 +191,60 @@ import FormFooterCopyRights from '@/components/layout/FormFooterCopyRights.vue'
 import AlertBox from '@/components/layout/AlertBox.vue'
 import useVuelidate from '@vuelidate/core'
 import { required, email, minLength } from '@vuelidate/validators'
+import CheckboxInput from '@/components/inputs/CheckboxInput.vue'
+import { useI18n } from 'vue-i18n'
 
-export default {
-    name: 'HomeView',
-    components: {
-        NoNavLayout,
-        BaseInput,
-        PasswordInput,
-        SignInWith,
-        FormFooterCopyRights,
-        AlertBox
+const { t } = useI18n({ useScope: 'global' })
+const alert = reactive({
+    type: 'warning',
+    icon: 'warning',
+    content: null
+})
+const route = useRoute()
+const signIn = reactive({
+    email: '',
+    password: '',
+    returnUrl: route.query['ReturnUrl'],
+    rememberMe: false
+})
+const validationRules = {
+    email: {
+        required,
+        email,
+        $lazy: true
     },
-    setup() {
-        return { v$: useVuelidate() }
+    password: {
+        required,
+        $lazy: true
     },
-    data() {
-        const route = useRoute()
-        return {
-            signIn: {
-                email: '',
-                password: '',
-                returnUrl: route.query['ReturnUrl']
-            },
-            alert: {
-                type: 'danger',
-                icon: 'warning',
-                content: null
-            }
-        }
-    },
-    methods: {
-        submit: async function (event) {
-            event.preventDefault()
-            this.alert.content = null
-            const isFormCorrect = await this.v$.$validate()
-            if (!isFormCorrect) return
-            await axios
-                .post('auth/login', this.signIn)
-                .then(({ data }) => {
-                    window.location.href = data
-                })
-                .catch(error => {
-                    console.log(error.response.data)
-                    this.alert.content = this.$i18n.t(error.response.data.type)
-                })
-        }
-    },
-    validations() {
-        return {
-            signIn: {
-                email: {
-                    required,
-                    email,
-                    $lazy: true
-                },
-                password: {
-                    required,
-                    $lazy: true
-                },
-                returnUrl: {
-                    required
-                }
-            }
-        }
+    returnUrl: {
+        required
     }
+}
+
+const $externalResults = ref({})
+const v$ = useVuelidate(validationRules, signIn, {
+    $externalResults
+})
+const submitting = ref(false)
+
+async function login(event) {
+    event.preventDefault()
+    alert.content = null
+    const isFormCorrect = await unref(v$).$validate()
+    if (!isFormCorrect || submitting.value) return
+    submitting.value = true
+    await axios
+        .post('auth/login', signIn)
+        .then(({ data }) => {
+            submitting.value = false
+            window.location.href = data
+        })
+        .catch(error => {
+            submitting.value = false
+            console.log(error.response.data)
+            alert.content = t(error.response.data.type)
+        })
 }
 </script>
 <style lang="scss">
