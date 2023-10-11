@@ -131,7 +131,10 @@ Main Content START -->
                                                 >
                                                 </CheckboxInput>
                                                 <router-link
-                                                    to="/forgot-password"
+                                                    :to="{
+                                                        path: 'forgot-password',
+                                                        query: route.query
+                                                    }"
                                                 >
                                                     {{
                                                         $t(
